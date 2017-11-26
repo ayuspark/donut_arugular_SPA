@@ -4,7 +4,7 @@ namespace donut_arugular_SPA
 {
     public class myDbContext : DbContext 
     {
-        public myDbContext(string connectionString)
+        public myDbContext(DbContextOptions<myDbContext> options) : base(options)
         {
             
         }
