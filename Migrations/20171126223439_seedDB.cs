@@ -27,7 +27,7 @@ namespace donut_arugular_SPA.Migrations
 
             migrationBuilder.Sql("INSERT INTO Models (Name, MakeId) VALUES ('MINI_Cooper', (SELECT Id FROM Makes WHERE Name = 'MINI'))");
             migrationBuilder.Sql("INSERT INTO Models (Name, MakeId) VALUES ('MINI_CountryMan', (SELECT Id FROM Makes WHERE Name = 'MINI'))");
-            migrationBuilder.Sql("INSERT INTO Models (Name, MakeId) VALUES ('Volve_Alex', (SELECT Id FROM Makes WHERE Name = 'Volvo'))");
+            migrationBuilder.Sql("INSERT INTO Models (Name, MakeId) VALUES ('Volvo_Alex', (SELECT Id FROM Makes WHERE Name = 'Volvo'))");
             migrationBuilder.Sql("INSERT INTO Models (Name, MakeId) VALUES ('Subaru_Forester', (SELECT Id FROM Makes WHERE Name = 'Subaru'))");
         }
 
