@@ -25,8 +25,9 @@ namespace donut_arugular_SPA.Controllers
         [HttpGet("/api/makes")]
         public async Task<IEnumerable<MakeResource>> GetMake()
         {
-            var makes = await _context.Makes.Include(m => m.Models).ToListAsync();
+            var makes = await _context.Makes.Include(m => m.Models).ThenInclude(model => model.ModelFeatures).ThenInclude(mf => mf.Feature).ToListAsync();
 
+            // CANNOT use this because of self-ref loop
             // return await _context.Makes.Include(m => m.Models).ToListAsync();
 
             return _mapper.Map<List<Make>, List<MakeResource>>(makes);

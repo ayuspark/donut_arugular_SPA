@@ -12,24 +12,44 @@ export class VehicleFormComponent implements OnInit {
   models: any[];
   vehicle:any = {};
   features: any[];
+  private _allFeatures: any[];
 
   constructor(private _makeService: MakeService, private _featureService: FeatureService) { }
 
   ngOnInit() {
-    this._makeService.getMakes().subscribe(m => {
+    this._makeService.getMakes().subscribe(m => 
+    {
       this.makes = m;
-      console.log("Make: ", this.makes);
+      // console.log("Make: ", this.makes);
     });
 
-    this._featureService.getFeatures().subscribe(f => {this.features = f})
+    this._featureService.getFeatures().subscribe(f => {
+      this._allFeatures = f;
+    })
   }
 
   onMakeChange() {
     console.log("VEHICLE MAKE CHOSEN: ", this.vehicle);
+    this.features = [];
     var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
-    console.log("SELECTED MAKE: ", selectedMake);
+
     this.models = selectedMake? selectedMake.models:[];
-    console.log("POPULATE MODELS: ", this.models);
+    // console.log("POPULATE MODELS: ", this.models);
+
+    return selectedMake;
+  }
+
+  onModelChange() {
+    this.features = [];
+    var selectedMake = this.onMakeChange();
+    var selectedModel = this.models.find(model => model.id == this.vehicle.modelId);
+    
+    let modelFeaturesOfSelectedModel = selectedModel.modelFeatures;
+
+    modelFeaturesOfSelectedModel.map( (mf:any) => 
+    {
+      this.features.push(this._allFeatures.find(f => f.id == mf.featureId));
+    });
   }
 
 }

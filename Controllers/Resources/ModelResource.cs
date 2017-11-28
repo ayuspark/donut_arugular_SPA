@@ -7,10 +7,10 @@ namespace donut_arugular_SPA.Controllers.Resources
     {
         public ModelResource()
         {
-            Features = new Collection<FeatureResource>();
+            ModelFeatures = new Collection<ModelFeatureResource>();
         }
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<FeatureResource> Features { get; set; }
+        public ICollection<ModelFeatureResource> ModelFeatures { get; set; }
     }
 }

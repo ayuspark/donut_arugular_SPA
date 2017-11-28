@@ -3,14 +3,20 @@
   <div class="form-group">
     <label for="make">Make</label>
     <!-- doesn't seem to matter what I use for "name" in select -->
-    <select id="make" class="form-control" (change)="onMakeChange()" [(ngModel)]="vehicle.makeId" name="makehahahahahahahahaha">
+    <select id="make" class="form-control" 
+    (change)="onMakeChange()" 
+    [(ngModel)]="vehicle.makeId" 
+    name="makehahahahahahahahaha">
       <option value=""></option>
       <option *ngFor="let make of makes" value="{{ make.id }}">{{ make.name }}</option>
     </select>
   </div>
   <div class="form-group">
     <label for="model">Model</label>
-    <select id="model" class="form-control">
+    <select id="model" class="form-control" 
+    (change)="onModelChange()"
+    [(ngModel)]="vehicle.modelId" 
+    name="modelHAHAHAHAHA">
       <option *ngFor="let model of models" value="{{ model.id }}">{{ model.name }}</option>
     </select>
   </div>
