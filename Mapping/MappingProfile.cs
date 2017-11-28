@@ -10,6 +10,7 @@ namespace donut_arugular_SPA.Mapping
         {
             CreateMap<Make, MakeResource>();   
             CreateMap<Model, ModelResource>();
+            CreateMap<Feature, FeatureResource>();
         }
     }
 }

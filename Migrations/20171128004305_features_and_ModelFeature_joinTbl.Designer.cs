@@ -11,9 +11,10 @@ using System;
 namespace donut_arugular_SPA.Migrations
 {
     [DbContext(typeof(myDbContext))]
-    partial class myDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171128004305_features_and_ModelFeature_joinTbl")]
+    partial class features_and_ModelFeature_joinTbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
