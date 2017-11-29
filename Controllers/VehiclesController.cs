@@ -4,6 +4,7 @@ using donut_arugular_SPA.Models;
 using AutoMapper;
 using System.Threading.Tasks;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace donut_arugular_SPA.Controllers
 {
@@ -38,6 +39,26 @@ namespace donut_arugular_SPA.Controllers
             vehicle.LastUpdate = DateTime.Now;
 
             _context.Vehicles.Add(vehicle);
+            await _context.SaveChangesAsync();
+
+            var result = _mapper.Map<Vehicle, VehicleResource>(vehicle);
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")] //route: /api/vehicles/id
+        public async Task<IActionResult> UpdateVehicle([FromBody]VehicleResource vehicleResource, int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var vehicle = await _context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+            
+            
+            _mapper.Map<VehicleResource, Vehicle>(vehicleResource, vehicle);
+            vehicle.LastUpdate = DateTime.Now;
+
             await _context.SaveChangesAsync();
 
             var result = _mapper.Map<Vehicle, VehicleResource>(vehicle);
