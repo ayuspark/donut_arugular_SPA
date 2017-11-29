@@ -5,6 +5,7 @@ using AutoMapper;
 using System.Threading.Tasks;
 using System;
 using Microsoft.EntityFrameworkCore;
+using donut_arugular_SPA.Persisence;
 
 namespace donut_arugular_SPA.Controllers
 {
@@ -13,22 +14,24 @@ namespace donut_arugular_SPA.Controllers
     {
         private readonly IMapper _mapper;
         private readonly myDbContext _context;
+        private readonly IVehicleRepository _repo;
 
-        public VehiclesController(IMapper mapper, myDbContext context)
+        public VehiclesController(IMapper mapper, myDbContext context, IVehicleRepository repo)
         {
+            _repo = repo;
             _mapper = mapper;
             _context = context;
         }
         [HttpPost]
         public async Task<IActionResult> CreateVehicle([FromBody]SaveVehicleResource vehicleResource)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             // var model = await _context.Models.FindAsync(vehicleResource.ModelId);
-           
+
             // if(model == null)
             // {
             //     ModelState.AddModelError("ModelId", "Invalid model id");
@@ -42,14 +45,8 @@ namespace donut_arugular_SPA.Controllers
             await _context.SaveChangesAsync();
 
             // Complete Vehicle object, incl. Make, Model obj etc.
-            vehicle = await _context.Vehicles
-            .Include(v => v.Features)
-                .ThenInclude(f => f.Feature)
-            .Include(v => v.Model)
-                .ThenInclude(m => m.Make)
-            // .ThenInclude(mk => mk.Models)
-            // .ThenInclude(m => m.ModelFeatures)
-            .SingleOrDefaultAsync(v => v.Id == vehicle.Id);
+            System.Console.WriteLine("&&&&&&&&&&&&&&&&", GetVehicle(vehicle.Id).Result);
+            vehicle = await _repo.GetVehicleAsync(vehicle.Id);
 
             var result = _mapper.Map<Vehicle, VehicleResource>(vehicle);
             return Ok(result);
@@ -63,8 +60,8 @@ namespace donut_arugular_SPA.Controllers
                 return BadRequest(ModelState);
             }
 
-            var vehicle = await _context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
-            
+            var vehicle = await _repo.GetVehicleAsync(id);
+
             if (vehicle == null)
             {
                 return NotFound();
@@ -97,19 +94,12 @@ namespace donut_arugular_SPA.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
-            var vehicle = await _context.Vehicles
-            .Include(v => v.Features)
-                .ThenInclude(f => f.Feature)
-            .Include(v => v.Model)
-                .ThenInclude(m => m.Make)
-                    // .ThenInclude(mk => mk.Models)
-                        // .ThenInclude(m => m.ModelFeatures)
-            .SingleOrDefaultAsync(v => v.Id == id);
+            var vehicle = await _repo.GetVehicleAsync(id);
             if (vehicle == null)
             {
                 return NotFound();
             }
-            
+
             var vehicleResource = _mapper.Map<Vehicle, VehicleResource>(vehicle);
 
             return Ok(vehicleResource);

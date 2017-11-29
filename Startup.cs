@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using donut_arugular_SPA.Persisence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -27,6 +28,9 @@ namespace donut_arugular_SPA
             services.AddDbContext<myDbContext>(options =>
                                                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAutoMapper();
+
+            // Add IVehicleRepo to service as scoped
+            services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddMvc();
         }
 

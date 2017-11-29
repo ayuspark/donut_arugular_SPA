@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using donut_arugular_SPA.Models;
 using AutoMapper;
 using donut_arugular_SPA.Controllers.Resources;
+using donut_arugular_SPA.Persisence;
 
 namespace donut_arugular_SPA.Controllers
 {
