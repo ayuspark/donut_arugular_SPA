@@ -31,6 +31,7 @@ namespace donut_arugular_SPA
 
             // Add IVehicleRepo to service as scoped
             services.AddScoped<IVehicleRepository, VehicleRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddMvc();
         }
 

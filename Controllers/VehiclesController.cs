@@ -13,14 +13,15 @@ namespace donut_arugular_SPA.Controllers
     public class VehiclesController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly myDbContext _context;
+        // private readonly myDbContext _context; // *** bcuz we use _repo and _uow now
         private readonly IVehicleRepository _repo;
+        private readonly IUnitOfWork _uow;
 
-        public VehiclesController(IMapper mapper, myDbContext context, IVehicleRepository repo)
+        public VehiclesController(IMapper mapper, IVehicleRepository repo, IUnitOfWork uow)
         {
+            _uow = uow;
             _repo = repo;
             _mapper = mapper;
-            _context = context;
         }
         [HttpPost]
         public async Task<IActionResult> CreateVehicle([FromBody]SaveVehicleResource vehicleResource)
@@ -41,11 +42,11 @@ namespace donut_arugular_SPA.Controllers
             var vehicle = _mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
             vehicle.LastUpdate = DateTime.Now;
 
-            _context.Vehicles.Add(vehicle);
-            await _context.SaveChangesAsync();
+            // _context.Vehicles.Add(vehicle);
+            _repo.Add(vehicle); // *** for OOP reason to decouple from DbContext, cuz it may change.
+            await _uow.CompleteAsync();
 
             // Complete Vehicle object, incl. Make, Model obj etc.
-            System.Console.WriteLine("&&&&&&&&&&&&&&&&", GetVehicle(vehicle.Id).Result);
             vehicle = await _repo.GetVehicleAsync(vehicle.Id);
 
             var result = _mapper.Map<Vehicle, VehicleResource>(vehicle);
@@ -70,7 +71,7 @@ namespace donut_arugular_SPA.Controllers
             _mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource, vehicle);
             vehicle.LastUpdate = DateTime.Now;
 
-            await _context.SaveChangesAsync();
+            await _uow.CompleteAsync();
 
             var result = _mapper.Map<Vehicle, VehicleResource>(vehicle);
             return Ok(result);
@@ -79,14 +80,14 @@ namespace donut_arugular_SPA.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicleAsync(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _repo.GetVehicleAsync(id, includeRelatedProp: false);
 
             if (vehicle == null)
             {
                 return NotFound();
             }
-            _context.Vehicles.Remove(vehicle);
-            await _context.SaveChangesAsync();
+            _repo.Remove(vehicle);
+            await _uow.CompleteAsync();
 
             return Ok(id);
         }
