@@ -1,24 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace donut_arugular_SPA.Controllers.Resources
 {
-
     public class VehicleResource
     {
         public VehicleResource()
         {
-            Features = new Collection<int>();
+            Features = new Collection<FeatureResource>();
         }
         public int Id { get; set; }
-        [ForeignKey("Model")]
-        public int ModelId { get; set; }
+        public MakeResource Make { get; set; }
+        
+        public ModelResource Model { get; set; } // navigation property
         public bool isRegistered { get; set; }
-        [Required]
         public ContactResource Contact { get; set; }
-        public ICollection<int> Features { get; set; }
+        public DateTime LastUpdate { get; set; }
+        public ICollection<FeatureResource> Features { get; set; }
+
     }
 }

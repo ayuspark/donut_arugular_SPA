@@ -20,7 +20,7 @@ namespace donut_arugular_SPA.Controllers
             _context = context;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateVehicle([FromBody]VehicleResource vehicleResource)
+        public async Task<IActionResult> CreateVehicle([FromBody]SaveVehicleResource vehicleResource)
         {
             if(!ModelState.IsValid)
             {
@@ -35,18 +35,28 @@ namespace donut_arugular_SPA.Controllers
             //     return BadRequest(ModelState);
             // }
 
-            var vehicle = _mapper.Map<VehicleResource, Vehicle>(vehicleResource);
+            var vehicle = _mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
             vehicle.LastUpdate = DateTime.Now;
 
             _context.Vehicles.Add(vehicle);
             await _context.SaveChangesAsync();
+
+            // Complete Vehicle object, incl. Make, Model obj etc.
+            vehicle = await _context.Vehicles
+            .Include(v => v.Features)
+                .ThenInclude(f => f.Feature)
+            .Include(v => v.Model)
+                .ThenInclude(m => m.Make)
+            // .ThenInclude(mk => mk.Models)
+            // .ThenInclude(m => m.ModelFeatures)
+            .SingleOrDefaultAsync(v => v.Id == vehicle.Id);
 
             var result = _mapper.Map<Vehicle, VehicleResource>(vehicle);
             return Ok(result);
         }
 
         [HttpPut("{id}")] //route: /api/vehicles/id
-        public async Task<IActionResult> UpdateVehicle([FromBody]VehicleResource vehicleResource, int id)
+        public async Task<IActionResult> UpdateVehicle([FromBody]SaveVehicleResource vehicleResource, int id)
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +70,7 @@ namespace donut_arugular_SPA.Controllers
                 return NotFound();
             }
 
-            _mapper.Map<VehicleResource, Vehicle>(vehicleResource, vehicle);
+            _mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource, vehicle);
             vehicle.LastUpdate = DateTime.Now;
 
             await _context.SaveChangesAsync();
@@ -87,7 +97,14 @@ namespace donut_arugular_SPA.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
-            var vehicle = await _context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+            var vehicle = await _context.Vehicles
+            .Include(v => v.Features)
+                .ThenInclude(f => f.Feature)
+            .Include(v => v.Model)
+                .ThenInclude(m => m.Make)
+                    // .ThenInclude(mk => mk.Models)
+                        // .ThenInclude(m => m.ModelFeatures)
+            .SingleOrDefaultAsync(v => v.Id == id);
             if (vehicle == null)
             {
                 return NotFound();
