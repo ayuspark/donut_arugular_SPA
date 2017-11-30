@@ -3,6 +3,9 @@ import { VehicleService } from '../../services/vehicle.service'
 import { Event, ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/Observable/forkJoin';
+import { SaveVehicle, Vehicle } from '../../models/Vehicle';
 
 
 @Component({
@@ -13,10 +16,18 @@ import { ToastyService } from 'ng2-toasty';
 export class VehicleFormComponent implements OnInit {
   makes: any[];
   models: any[];
-  vehicle:any = {
+  vehicle: SaveVehicle = {
+    id: 0,
+    makeId: 0,
+    modelId: 0,
+    isRegistered: "false",
     features: [],
-    contact: {},
-  };
+    contact: {
+      name: '',
+      phone: '',
+      email: '',
+    },
+  }
   features: any[];
   private _allFeatures: any[];
 
@@ -31,23 +42,50 @@ export class VehicleFormComponent implements OnInit {
     }
 
   ngOnInit() {
-    this._vehicleService.getMakes().subscribe(m => 
-    {
-      this.makes = m;
-      // console.log("Make: ", this.makes);
-    });
+    var sources = [
+      this._vehicleService.getMakes(),
+      this._vehicleService.getFeatures(),
+    ]
+    // if route is /vehicles/new, this.vehicle.id = NaN
+    if (this.vehicle.id) {
+      sources.push(this._vehicleService.getVehicle(this.vehicle.id))
+    }
 
-    this._vehicleService.getFeatures().subscribe(f => {
-      this._allFeatures = f;
-    })
+    Observable.forkJoin(sources)
+      .subscribe(
+        data => {
+          this.makes = data[0];
+          this._allFeatures = data[1];
 
-    this._vehicleService.getVehicle(this.vehicle.id).subscribe( v=> {
-      this.vehicle = v;
-    }, err => {
-      if (err.status == 404) {
-        this.router.navigate(['/home']);
-      }
-    })
+          if (this.vehicle.id) {
+            this.setVehicle(data[2])
+          }
+        }, 
+        err => {
+          if (err.status == 404) {
+            this.router.navigate(['/home']);
+          }
+        })
+
+    //+++++++++++ SEPARATE SUBSCRIBE ++++++++++++++++++++++++++
+    // this._vehicleService.getMakes().subscribe(m => 
+    // {
+    //   this.makes = m;
+    //   // console.log("Make: ", this.makes);
+    // });
+
+    // this._vehicleService.getFeatures().subscribe(f => {
+    //   this._allFeatures = f;
+    // })
+
+    // this._vehicleService.getVehicle(this.vehicle.id).subscribe( v=> {
+    //   this.vehicle = v;
+    // }, err => {
+    //   if (err.status == 404) {
+    //     this.router.navigate(['/home']);
+    //   }
+    // })
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   }
 
   onMakeChange() {
@@ -87,6 +125,20 @@ export class VehicleFormComponent implements OnInit {
     this._vehicleService.create(this.vehicle)
     .subscribe(
       v => console.log(v));
+  }
+
+  setVehicle(v: Vehicle): void {
+    this.vehicle.id = v.id;
+
+    this.vehicle.makeId = v.make.id;
+
+    this.models = this.makes.find(m => m.id == this.vehicle.makeId).models;
+    this.vehicle.modelId = v.model.id;
+
+    this.features = v.features;
+
+    this.vehicle.isRegistered = v.isRegistered.toString();
+    this.vehicle.contact = v.contact;
   }
 
 }
