@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/Observable/forkJoin';
-import { SaveVehicle, Vehicle } from '../../models/Vehicle';
+import { SaveVehicle, Vehicle, KeyValuePair } from '../../models/Vehicle';
 
 
 @Component({
@@ -28,12 +28,11 @@ export class VehicleFormComponent implements OnInit {
       email: '',
     },
   }
-  features: any[];
+  features: KeyValuePair[];
   private _allFeatures: any[];
 
   constructor(
     private _vehicleService: VehicleService, 
-    private _toastyService: ToastyService,
     private route: ActivatedRoute,
     private router: Router,) { 
       route.params.subscribe(p => {
@@ -102,14 +101,17 @@ export class VehicleFormComponent implements OnInit {
   }
 
   private populateFeatures() {
+    let selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
+    let modelFeaturesOfSelectedModel = []; 
     this.features = [];
-    var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
     if (selectedMake != null)
     {
       var selectedModel = this.models.find(model => model.id == this.vehicle.modelId);
       
-      let modelFeaturesOfSelectedModel = selectedModel.modelFeatures;
-  
+      if (selectedModel != null) {
+        modelFeaturesOfSelectedModel = selectedModel.modelFeatures;
+      }
+      console.log("mf: ", modelFeaturesOfSelectedModel);
       modelFeaturesOfSelectedModel.map( (mf:any) => 
       {
         this.features.push(this._allFeatures.find(f => f.id == mf.featureId));
@@ -127,6 +129,8 @@ export class VehicleFormComponent implements OnInit {
   }
 
   submit() {
+    console.log("this.v: ", this.vehicle);
+    delete this.vehicle.id;
     this._vehicleService.create(this.vehicle)
     .subscribe(
       v => console.log(v));
@@ -136,7 +140,7 @@ export class VehicleFormComponent implements OnInit {
     this.vehicle.id = v.id;
     this.vehicle.makeId = v.make.id;
     this.vehicle.modelId = v.model.id;
-    // this.features = v.features;
+    v.features.map(f => this.vehicle.features.push(f.id));
     this.vehicle.isRegistered = v.isRegistered;
     this.vehicle.contact = v.contact;
   }

@@ -20,7 +20,7 @@ export interface Vehicle {
 }
 
 export interface SaveVehicle {
-    id: number;
+    id?: number;
     modelId: number;
     makeId: number;
     isRegistered: boolean;
