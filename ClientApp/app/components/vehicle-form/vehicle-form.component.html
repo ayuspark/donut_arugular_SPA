@@ -2,7 +2,7 @@
 <p>
   {{ vehicle | json }}
 </p>
-<form>
+<form (ngSubmit)="submit()">
   <div class="form-group">
     <label for="make">Make</label>
     <!-- doesn't seem to matter what I use for "name" in select -->
