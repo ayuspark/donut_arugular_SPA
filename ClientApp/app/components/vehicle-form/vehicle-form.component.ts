@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { VehicleService } from '../../services/vehicle.service'
+import { Event } from '@angular/router/src/events';
+import { Router } from '@angular/router/src/router';
 
 @Component({
   selector: 'app-vehicle-form',
@@ -9,7 +11,10 @@ import { VehicleService } from '../../services/vehicle.service'
 export class VehicleFormComponent implements OnInit {
   makes: any[];
   models: any[];
-  vehicle:any = {};
+  vehicle:any = {
+    features: [],
+    contact: {},
+  };
   features: any[];
   private _allFeatures: any[];
 
@@ -28,27 +33,37 @@ export class VehicleFormComponent implements OnInit {
   }
 
   onMakeChange() {
-    console.log("VEHICLE MAKE CHOSEN: ", this.vehicle);
-    this.features = [];
     var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
 
     this.models = selectedMake? selectedMake.models:[];
     // console.log("POPULATE MODELS: ", this.models);
-
-    return selectedMake;
+    delete this.vehicle.modelId;
   }
 
   onModelChange() {
     this.features = [];
-    var selectedMake = this.onMakeChange();
-    var selectedModel = this.models.find(model => model.id == this.vehicle.modelId);
-    
-    let modelFeaturesOfSelectedModel = selectedModel.modelFeatures;
-
-    modelFeaturesOfSelectedModel.map( (mf:any) => 
+    var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
+    if (selectedMake != null)
     {
-      this.features.push(this._allFeatures.find(f => f.id == mf.featureId));
-    });
+      var selectedModel = this.models.find(model => model.id == this.vehicle.modelId);
+      
+      let modelFeaturesOfSelectedModel = selectedModel.modelFeatures;
+  
+      modelFeaturesOfSelectedModel.map( (mf:any) => 
+      {
+        this.features.push(this._allFeatures.find(f => f.id == mf.featureId));
+      });
+    }
   }
+
+  onFeatureToggle(featureId: number, $event: any) {
+    if ($event.target.checked) {
+      this.vehicle.features.push(featureId);
+    } else {
+      var index = this.vehicle.features.indexOf(featureId);
+      this.vehicle.features.splice(index, 1);
+    }
+  }
+
 
 }
