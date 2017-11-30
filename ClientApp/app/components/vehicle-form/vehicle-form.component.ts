@@ -20,7 +20,7 @@ export class VehicleFormComponent implements OnInit {
     id: 0,
     makeId: 0,
     modelId: 0,
-    isRegistered: "false",
+    isRegistered: false,
     features: [],
     contact: {
       name: '',
@@ -97,9 +97,11 @@ export class VehicleFormComponent implements OnInit {
   private populateModels() {
     var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
     this.models = selectedMake ? selectedMake.models : [];
+
+    this.populateFeatures();
   }
 
-  onModelChange() {
+  private populateFeatures() {
     this.features = [];
     var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
     if (selectedMake != null)
@@ -134,8 +136,8 @@ export class VehicleFormComponent implements OnInit {
     this.vehicle.id = v.id;
     this.vehicle.makeId = v.make.id;
     this.vehicle.modelId = v.model.id;
-    this.features = v.features;
-    this.vehicle.isRegistered = v.isRegistered.toString();
+    // this.features = v.features;
+    this.vehicle.isRegistered = v.isRegistered;
     this.vehicle.contact = v.contact;
   }
 

@@ -23,7 +23,7 @@ export interface SaveVehicle {
     id: number;
     modelId: number;
     makeId: number;
-    isRegistered: string;
+    isRegistered: boolean;
     features: number[];
     contact: Contact;
 }
