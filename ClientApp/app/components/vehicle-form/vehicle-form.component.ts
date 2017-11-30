@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { VehicleService } from '../../services/vehicle.service'
 import { Event } from '@angular/router/src/events';
 import { Router } from '@angular/router/src/router';
+import { ToastyService } from 'ng2-toasty';
 
 @Component({
   selector: 'app-vehicle-form',
@@ -18,7 +19,7 @@ export class VehicleFormComponent implements OnInit {
   features: any[];
   private _allFeatures: any[];
 
-  constructor(private _vehicleService: VehicleService) { }
+  constructor(private _vehicleService: VehicleService, private _toastyService: ToastyService) { }
 
   ngOnInit() {
     this._vehicleService.getMakes().subscribe(m => 
@@ -67,7 +68,8 @@ export class VehicleFormComponent implements OnInit {
 
   submit() {
     this._vehicleService.create(this.vehicle)
-    .subscribe(v => console.log(v));
+    .subscribe(
+      v => console.log(v));
   }
 
 }
