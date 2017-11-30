@@ -2,26 +2,33 @@
 <p>
   {{ vehicle | json }}
 </p>
-<form (ngSubmit)="submit()">
+<form (ngSubmit)="submit()" #vehicleForm="ngForm">
   <div class="form-group">
     <label for="make">Make</label>
     <!-- doesn't seem to matter what I use for "name" in select -->
     <select id="make" class="form-control" 
     (change)="onMakeChange()" 
     [(ngModel)]="vehicle.makeId" 
+    required
+    #make="ngModel"
     name="makeIdhahahahahahahahaha">
       <option value=""></option>
       <option *ngFor="let make of makes" value="{{ make.id }}">{{ make.name }}</option>
     </select>
+    <div class="alert alert-danger" *ngIf="make.touched && !make.valid">Please specify the make.</div>
   </div>
+
   <div class="form-group">
     <label for="model">Model</label>
     <select id="model" class="form-control" 
     (change)="onModelChange()"
+    required
     [(ngModel)]="vehicle.modelId" 
+    #model="ngModel"
     name="modelHAHAHAHAHA">
       <option *ngFor="let model of models" value="{{ model.id }}">{{ model.name }}</option>
     </select>
+    <div class="alert alert-danger" *ngIf="model.touched && !model.valid">Please specify model.</div>
   </div>
 
   <p>Is this vehicle registered?</p>
@@ -45,23 +52,32 @@
     <label for="contactName">Name
       <input type="text" id="contactName" class="form-control"
       name="contactName"
-      [(ngModel)]="vehicle.contact.name">
+      required
+      [(ngModel)]="vehicle.contact.name"
+      #cName="ngModel">
     </label>
+    <div class="alert alert-danger" *ngIf="cName.touched && !cName.valid">Name is required.</div>
   </div>
   <div class="form-group">
     <label for="contactPhone">Phone
       <input type="tel" id="contactPhone" class="form-control"
-      name="contactPhone" 
+      name="contactPhone"
+      required 
       pattern="^\d+$"
-      [(ngModel)]="vehicle.contact.phone">
+      [(ngModel)]="vehicle.contact.phone"
+      #cPhone="ngModel">
     </label>
+    <div class="alert alert-danger" *ngIf="cPhone.touched && !cPhone.valid">Phone is required.</div>
   </div>
   <div class="form-group">
     <label for="contactEmail">Email
-      <input type="text" id="contactEmail" class="form-control" name="contactEmail" 
-      [(ngModel)]="vehicle.contact.email">
+      <input type="text" id="contactEmail" class="form-control" name="contactEmail"
+      required 
+      [(ngModel)]="vehicle.contact.email"
+      #cEmail="ngModel">
     </label>
+    <div class="alert alert-danger" *ngIf="cEmail.touched && !cEmail.valid">Email is required.</div>
   </div>
 
-  <button class="btn btn-primary">Save</button>
+  <button class="btn btn-primary" [disabled]="!vehicleForm.valid">Save</button>
 </form>
