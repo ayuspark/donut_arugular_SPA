@@ -58,7 +58,8 @@ export class VehicleFormComponent implements OnInit {
           this._allFeatures = data[1];
 
           if (this.vehicle.id) {
-            this.setVehicle(data[2])
+            this.setVehicle(data[2]);
+            this.populateModels();
           }
         }, 
         err => {
@@ -89,11 +90,13 @@ export class VehicleFormComponent implements OnInit {
   }
 
   onMakeChange() {
-    var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
-
-    this.models = selectedMake? selectedMake.models:[];
-    // console.log("POPULATE MODELS: ", this.models);
+    this.populateModels();
     delete this.vehicle.modelId;
+  }
+
+  private populateModels() {
+    var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
+    this.models = selectedMake ? selectedMake.models : [];
   }
 
   onModelChange() {
@@ -127,16 +130,11 @@ export class VehicleFormComponent implements OnInit {
       v => console.log(v));
   }
 
-  setVehicle(v: Vehicle): void {
+  private setVehicle(v: Vehicle): void {
     this.vehicle.id = v.id;
-
     this.vehicle.makeId = v.make.id;
-
-    this.models = this.makes.find(m => m.id == this.vehicle.makeId).models;
     this.vehicle.modelId = v.model.id;
-
     this.features = v.features;
-
     this.vehicle.isRegistered = v.isRegistered.toString();
     this.vehicle.contact = v.contact;
   }
