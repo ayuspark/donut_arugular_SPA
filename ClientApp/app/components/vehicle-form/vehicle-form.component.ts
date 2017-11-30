@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { VehicleService } from '../../services/vehicle.service'
-import { Event } from '@angular/router/src/events';
-import { Router } from '@angular/router/src/router';
+import { Event, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
+
 
 @Component({
   selector: 'app-vehicle-form',
@@ -19,7 +20,15 @@ export class VehicleFormComponent implements OnInit {
   features: any[];
   private _allFeatures: any[];
 
-  constructor(private _vehicleService: VehicleService, private _toastyService: ToastyService) { }
+  constructor(
+    private _vehicleService: VehicleService, 
+    private _toastyService: ToastyService,
+    private route: ActivatedRoute,
+    private router: Router,) { 
+      route.params.subscribe(p => {
+        this.vehicle.id = +p['id'];
+      });
+    }
 
   ngOnInit() {
     this._vehicleService.getMakes().subscribe(m => 
@@ -30,6 +39,14 @@ export class VehicleFormComponent implements OnInit {
 
     this._vehicleService.getFeatures().subscribe(f => {
       this._allFeatures = f;
+    })
+
+    this._vehicleService.getVehicle(this.vehicle.id).subscribe( v=> {
+      this.vehicle = v;
+    }, err => {
+      if (err.status == 404) {
+        this.router.navigate(['/home']);
+      }
     })
   }
 

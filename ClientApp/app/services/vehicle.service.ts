@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { resetFakeAsyncZone } from '@angular/core/testing';
 
 @Injectable()
 export class VehicleService {
@@ -17,5 +18,9 @@ export class VehicleService {
 
   create(vehicle:any) {
     return this._http.post('api/vehicles', vehicle).map(resp => resp.json())
+  }
+
+  getVehicle(id: number) {
+    return this._http.get('api/vehicles/' + id).map(resp => resp.json())
   }
 }
