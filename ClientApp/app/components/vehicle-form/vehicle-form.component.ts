@@ -149,6 +149,14 @@ export class VehicleFormComponent implements OnInit {
     }
   }
 
+  delete() {
+    if (confirm("Are you sure?")) {
+      this._vehicleService.delete(this.vehicle.id).subscribe(x => {
+        this.router.navigate(['/home']);
+      });
+    }
+  }
+
   private setVehicle(v: Vehicle): void {
     this.vehicle.id = v.id;
     this.vehicle.makeId = v.make.id;

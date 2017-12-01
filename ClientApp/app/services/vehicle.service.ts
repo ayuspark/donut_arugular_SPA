@@ -28,4 +28,8 @@ export class VehicleService {
   update(vehicle: SaveVehicle) {
     return this._http.put('api/vehicles/' + vehicle.id, vehicle).map(resp => resp.json())
   }
+
+  delete(id: any) {
+    return this._http.delete('api/vehicles/' + id).map(resp => resp.json())
+  }
 }
