@@ -73,6 +73,7 @@ namespace donut_arugular_SPA.Controllers
 
             await _uow.CompleteAsync();
 
+            vehicle = await _repo.GetVehicleAsync(vehicle.Id);
             var result = _mapper.Map<Vehicle, VehicleResource>(vehicle);
             return Ok(result);
         }

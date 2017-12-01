@@ -33,6 +33,7 @@ export class VehicleFormComponent implements OnInit {
 
   constructor(
     private _vehicleService: VehicleService, 
+    private _toastyService: ToastyService,
     private route: ActivatedRoute,
     private router: Router,) { 
       route.params.subscribe(p => {
@@ -129,11 +130,23 @@ export class VehicleFormComponent implements OnInit {
   }
 
   submit() {
-    console.log("this.v: ", this.vehicle);
-    delete this.vehicle.id;
-    this._vehicleService.create(this.vehicle)
-    .subscribe(
-      v => console.log(v));
+    if (this.vehicle.id) {
+      this._vehicleService.update(this.vehicle).subscribe(u => {
+        this.setVehicle(u);
+        this._toastyService.success({
+          title: "Success",
+          msg: "The vehicle was successfully updated.",
+          theme: "bootstrap",
+          showClose: true,
+          timeout: 5000,
+        })
+      });
+    } else {
+      delete this.vehicle.id; // cannot create new entry with id, so delete
+      this._vehicleService.create(this.vehicle)
+      .subscribe(
+        v => console.log(v));
+    }
   }
 
   private setVehicle(v: Vehicle): void {

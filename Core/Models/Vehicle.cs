@@ -10,7 +10,7 @@ namespace donut_arugular_SPA.Models
     {
         public Vehicle()
         {
-            Features = new Collection<VehicleFeature>();
+            Features = new List<VehicleFeature>();
         }
         public int Id { get; set; }
         [ForeignKey("Model")]

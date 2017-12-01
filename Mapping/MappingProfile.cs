@@ -41,15 +41,21 @@ namespace donut_arugular_SPA.Mapping
                 .AfterMap((vr, v) => {
                 
                     // Select features that vehicleResource NOT has
-                    var removeFeatures = v.Features.Where(f => !vr.Features.Contains(f.FeatureId));
 
-                    foreach (var f in removeFeatures)
+                    var removeFeatures = v.Features.Where(vf => !vr.Features.Contains(vf.FeatureId));
+                    
+                    var temp = v.Features.ToList();
+                    foreach (var f in removeFeatures.ToList())
                     {
-                        v.Features.Remove(f);
+                        temp.Remove(f);
                     }
+                    v.Features = temp;
 
                     // Select features that's NOT what Vehicle already has, so that to add
-                    var addedFeatures = vr.Features.Where(id => !v.Features.Any(f => f.FeatureId == id)).Select(id => new VehicleFeature { FeatureId = id });
+                    var addedFeatures = vr.Features.Where(id => !v.Features.Any(f => f.FeatureId == id)).Select(id => new VehicleFeature {
+                            FeatureId = id,
+                            VehicleId = vr.Id,
+                        });
 
                     foreach (var f in addedFeatures)
                     {
