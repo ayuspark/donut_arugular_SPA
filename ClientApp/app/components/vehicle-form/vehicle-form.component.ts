@@ -144,8 +144,11 @@ export class VehicleFormComponent implements OnInit {
     } else {
       delete this.vehicle.id; // cannot create new entry with id, so delete
       this._vehicleService.create(this.vehicle)
-      .subscribe(
-        v => console.log(v));
+      .subscribe(v => {
+        console.log(v);
+        let path = 'vehicles/' + v.id;
+        this.router.navigate([path]);
+      });
     }
   }
 
