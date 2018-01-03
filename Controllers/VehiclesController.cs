@@ -5,7 +5,7 @@ using AutoMapper;
 using System.Threading.Tasks;
 using System;
 using Microsoft.EntityFrameworkCore;
-using donut_arugular_SPA.Persisence;
+using donut_arugular_SPA.Persistence;
 
 namespace donut_arugular_SPA.Controllers
 {

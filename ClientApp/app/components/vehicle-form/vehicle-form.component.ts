@@ -54,6 +54,7 @@ export class VehicleFormComponent implements OnInit {
     Observable.forkJoin(sources)
       .subscribe(
         data => {
+          console.log('~~~~~~~~~~~ data: ', data);
           this.makes = data[0];
           this._allFeatures = data[1];
 

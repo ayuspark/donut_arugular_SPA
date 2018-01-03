@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using donut_arugular_SPA.Models;
 
-namespace donut_arugular_SPA.Persisence
+namespace donut_arugular_SPA.Persistence
 {
     public interface IVehicleRepository
     {

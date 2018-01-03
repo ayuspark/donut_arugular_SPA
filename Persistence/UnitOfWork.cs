@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace donut_arugular_SPA.Persisence
+namespace donut_arugular_SPA.Persistence
 {
     public class UnitOfWork : IUnitOfWork
     {

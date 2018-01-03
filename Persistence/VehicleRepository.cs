@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using donut_arugular_SPA.Models;
-using donut_arugular_SPA.Persisence;
+using donut_arugular_SPA.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace donut_arugular_SPA.Persisence
+namespace donut_arugular_SPA.Persistence
 {
     public class VehicleRepository : IVehicleRepository
     {
