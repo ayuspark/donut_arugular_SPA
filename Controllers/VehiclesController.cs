@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.EntityFrameworkCore;
 using donut_arugular_SPA.Persistence;
+using System.Collections.Generic;
 
 namespace donut_arugular_SPA.Controllers
 {
@@ -105,6 +106,13 @@ namespace donut_arugular_SPA.Controllers
             var vehicleResource = _mapper.Map<Vehicle, VehicleResource>(vehicle);
 
             return Ok(vehicleResource);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<VehicleResource>> AllVehicles()
+        {
+            var vehicles = await _repo.AllVehicles();
+            return _mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleResource>>(vehicles);
         }
     }
 }

@@ -13,6 +13,7 @@ import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
 import { CounterComponent } from './components/counter/counter.component';
 
 import { VehicleFormComponent } from './components/vehicle-form/vehicle-form.component';
+import { VehicleListComponent } from './components/vehicle-list/vehicle-list.component';
 import { VehicleService } from './services/vehicle.service';
 
 import { ErrorHandler } from '@angular/core';
@@ -27,6 +28,7 @@ import { AppErrorHandler } from './components/app/app.error-handler';
         FetchDataComponent,
         HomeComponent,
         VehicleFormComponent,
+        VehicleListComponent,
     ],
     imports: [
         CommonModule,
@@ -34,7 +36,8 @@ import { AppErrorHandler } from './components/app/app.error-handler';
         FormsModule,
         ToastyModule.forRoot(),
         RouterModule.forRoot([
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
+            { path: '', redirectTo: 'vehicles', pathMatch: 'full' },
+            { path: 'vehicles', component: VehicleListComponent },
             { path: 'vehicles/new', component: VehicleFormComponent },
             { path: 'vehicles/:id', component: VehicleFormComponent },
             { path: 'home', component: HomeComponent },

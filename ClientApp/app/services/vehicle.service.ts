@@ -25,6 +25,10 @@ export class VehicleService {
     return this._http.get('api/vehicles/' + id).map(resp => resp.json())
   }
 
+  allVehicles() {
+    return this._http.get('api/vehicles').map(resp => resp.json())
+  }
+
   update(vehicle: SaveVehicle) {
     return this._http.put('api/vehicles/' + vehicle.id, vehicle).map(resp => resp.json())
   }

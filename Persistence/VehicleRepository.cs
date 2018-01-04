@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using donut_arugular_SPA.Models;
 using donut_arugular_SPA.Persistence;
@@ -25,6 +26,16 @@ namespace donut_arugular_SPA.Persistence
             .Include(v => v.Model)
                 .ThenInclude(m => m.Make)
             .SingleOrDefaultAsync(v => v.Id == id);
+        }
+
+        public async Task<IEnumerable<Vehicle>> AllVehicles()
+        {
+            return await _context.Vehicles
+                .Include(v => v.Model)
+                    .ThenInclude(m => m.Make)
+                .Include(v => v.Features)
+                    .ThenInclude(f => f.Feature)
+                .ToListAsync();
         }
 
         public void Add(Vehicle vehicle)
